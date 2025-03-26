@@ -61,7 +61,7 @@ export class SettingsUsersComponent implements OnInit {
   }
 
   public async deleteUser(user: EUser) {
-    const pressedButton = await this.dialogService.showDialog({
+    let pressedButton = await this.dialogService.showDialog({
       title: `Are you sure you want to delete ${user.username}?`,
       description: 'This action cannot be undone.',
       buttons: [
@@ -78,7 +78,7 @@ export class SettingsUsersComponent implements OnInit {
     });
 
     if (pressedButton === 'delete') {
-      const result = await this.userManageService.deleteUser(user.id ?? '');
+      let result = await this.userManageService.deleteUser(user.id ?? '');
       if (HasFailed(result)) {
         this.errorService.showFailure(result, this.logger);
       } else {
@@ -86,7 +86,7 @@ export class SettingsUsersComponent implements OnInit {
       }
     }
 
-    const success = await this.fetchUsers(
+    let success = await this.fetchUsers(
       this.paginator.pageSize,
       this.paginator.pageIndex,
     );
@@ -100,7 +100,7 @@ export class SettingsUsersComponent implements OnInit {
     return this.updateSubject
       .pipe(Throttle(500))
       .subscribe(async (pageEvent: PageEvent) => {
-        const success = await this.fetchUsers(
+        let success = await this.fetchUsers(
           pageEvent.pageSize,
           pageEvent.pageIndex,
         );
@@ -118,7 +118,7 @@ export class SettingsUsersComponent implements OnInit {
     pageSize: number,
     pageIndex: number,
   ): Promise<boolean> {
-    const response = await this.userManageService.getUsers(pageSize, pageIndex);
+    let response = await this.userManageService.getUsers(pageSize, pageIndex);
     if (HasFailed(response)) {
       this.errorService.showFailure(response, this.logger);
       return false;
@@ -134,7 +134,7 @@ export class SettingsUsersComponent implements OnInit {
   }
 
   private async initSpecialUsers() {
-    const specialUsers = await this.staticInfo.getSpecialUsers();
+    let specialUsers = await this.staticInfo.getSpecialUsers();
     this.UndeletableUsersList = specialUsers.UndeletableUsersList;
   }
 
