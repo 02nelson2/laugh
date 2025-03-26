@@ -6,7 +6,7 @@ import { RegisterComponent } from './register/register.component';
 import { PermissionGuard } from '../../guards/permission.guard';
 import { PRoutes } from '../../models/dto/picsur-routes.dto';
 
-const routes: PRoutes = [
+let routes: PRoutes = [
   {
     path: 'login',
     component: LoginComponent,
