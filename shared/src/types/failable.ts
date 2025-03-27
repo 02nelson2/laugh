@@ -33,7 +33,7 @@ interface FTProp {
   message: string;
 }
 
-const FTProps: {
+let FTProps: {
   [key in FT]: FTProp;
 } = {
   [FT.Unknown]: {
@@ -135,7 +135,7 @@ export class Failure {
   }
 
   getName(): string {
-    const capitalizedType =
+    let capitalizedType =
       this.type.charAt(0).toUpperCase() + this.type.slice(1);
     return `${capitalizedType}Failure`;
   }
@@ -155,16 +155,16 @@ export class Failure {
       prefix?: string;
     },
   ): void {
-    const message = this.getReason();
-    const logmessage =
+    let message = this.getReason();
+    let logmessage =
       message + (this.getDebugMessage() ? ' - ' + this.getDebugMessage() : '');
 
-    const prefix = options?.prefix ? options.prefix + ' ' : '';
-    const logline = `${prefix}${this.getName()}: ${logmessage}`;
+    let prefix = options?.prefix ? options.prefix + ' ' : '';
+    let logline = `${prefix}${this.getName()}: ${logmessage}`;
 
     if (this.isImportant() && options?.notImportant !== true) {
       logger.error(logline);
-      const stack = this.getStack();
+      let stack = this.getStack();
       if (stack) {
         logger.debug(stack);
       }
@@ -181,7 +181,7 @@ export class Failure {
   }
 
   toError(): Error {
-    const error = new Error();
+    let error = new Error();
     (error as any).message = this;
     return error;
   }
@@ -237,7 +237,7 @@ export function Fail(type: FT, reason?: any, dbgReason?: any): Failure {
     }
   } else {
     // In this case we only accept strings for the reason
-    const strReason = reason?.toString() ?? FTProps[type].message;
+    let strReason = reason?.toString() ?? FTProps[type].message;
 
     if (typeof dbgReason === 'string') {
       return new Failure(
