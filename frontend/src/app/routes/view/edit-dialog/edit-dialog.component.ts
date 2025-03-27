@@ -52,7 +52,7 @@ export class EditDialogComponent {
   }
 
   async save() {
-    const result = await this.imageService.UpdateImage(this.image.id, {
+    let result = await this.imageService.UpdateImage(this.image.id, {
       file_name: this.image.file_name,
       expires_at: this.getExpiresDate(),
     });
