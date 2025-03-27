@@ -42,7 +42,7 @@ export class SysPreferenceDbService {
     value: PrefValueType,
   ): AsyncFailable<DecodedSysPref> {
     // Validate
-    const sysPreference = await this.encodeSysPref(key, value);
+    var sysPreference = await this.encodeSysPref(key, value);
     if (HasFailed(sysPreference)) return sysPreference;
 
     // Set
@@ -65,7 +65,7 @@ export class SysPreferenceDbService {
 
   public async getPreference(key: string): AsyncFailable<DecodedSysPref> {
     // Validate
-    const validatedKey = this.prefCommon.validatePrefKey(key, SysPreference);
+    var validatedKey = this.prefCommon.validatePrefKey(key, SysPreference);
     if (HasFailed(validatedKey)) return validatedKey;
 
     // See the comment in 'mutex-fallback.ts' for why we are using a mutex here
@@ -84,7 +84,7 @@ export class SysPreferenceDbService {
         }
 
         // Validate
-        const result = ESysPreferenceSchema.safeParse(existing);
+        var result = ESysPreferenceSchema.safeParse(existing);
         if (!result.success) {
           return Fail(FT.SysValidation, result.error);
         }
@@ -117,7 +117,7 @@ export class SysPreferenceDbService {
     key: string,
     type: PrefValueTypeStrings,
   ): AsyncFailable<PrefValueType> {
-    const pref = await this.getPreference(key);
+    var pref = await this.getPreference(key);
     if (HasFailed(pref)) return pref;
     if (pref.type !== type)
       return Fail(FT.UsrValidation, 'Invalid preference type');
@@ -127,7 +127,7 @@ export class SysPreferenceDbService {
 
   public async getAllPreferences(): AsyncFailable<DecodedSysPref[]> {
     // TODO: We are fetching each value invidually, we should fetch all at once
-    const internalSysPrefs = await Promise.all(
+    var internalSysPrefs = await Promise.all(
       SysPreferenceList.map((key) => this.getPreference(key)),
     );
     if (internalSysPrefs.some((pref) => HasFailed(pref))) {
@@ -149,7 +149,7 @@ export class SysPreferenceDbService {
     key: string,
     value: PrefValueType,
   ): AsyncFailable<ESysPreferenceBackend> {
-    const validated = await this.prefCommon.EncodePref(
+    var validated = await this.prefCommon.EncodePref(
       key,
       value,
       SysPreference,
@@ -157,18 +157,18 @@ export class SysPreferenceDbService {
     );
     if (HasFailed(validated)) return validated;
 
-    const valueValidated =
+    var valueValidated =
       SysPreferenceValidators[key as SysPreference].safeParse(value);
     if (!valueValidated.success) {
       return Fail(FT.UsrValidation, undefined, valueValidated.error);
     }
 
-    const verifySysPreference = new ESysPreferenceBackend();
+    var verifySysPreference = new ESysPreferenceBackend();
     verifySysPreference.key = validated.key;
     verifySysPreference.value = validated.value;
 
     // It should already be valid, but these two validators might go out of sync
-    const result = ESysPreferenceSchema.safeParse(verifySysPreference);
+    var result = ESysPreferenceSchema.safeParse(verifySysPreference);
     if (!result.success) {
       return Fail(FT.UsrValidation, result.error);
     }
