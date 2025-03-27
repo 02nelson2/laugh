@@ -32,8 +32,8 @@ export class PermissionGuard implements CanActivate, CanActivateChild {
   }
 
   private async can(route: ActivatedRouteSnapshot) {
-    const requiredPermissions: string[] = this.nestedPermissions(route);
-    const allPermissionsArray = await this.staticInfo.getAllPermissions();
+    var requiredPermissions: string[] = this.nestedPermissions(route);
+    var allPermissionsArray = await this.staticInfo.getAllPermissions();
 
     // Check if permissions array is valid
     // But only if we actually have the data
@@ -47,8 +47,8 @@ export class PermissionGuard implements CanActivate, CanActivateChild {
       return false;
     }
 
-    const ourPermissions = await this.permissionService.getLoadedSnapshot();
-    const weHavePermission = requiredPermissions.every((permission) =>
+    var ourPermissions = await this.permissionService.getLoadedSnapshot();
+    var weHavePermission = requiredPermissions.every((permission) =>
       ourPermissions.includes(permission),
     );
 
@@ -60,7 +60,7 @@ export class PermissionGuard implements CanActivate, CanActivateChild {
 
   // This aggregates nested permission for deep routes
   private nestedPermissions(route: ActivatedRouteSnapshot): string[] {
-    const data: PRouteData = route.data;
+    var data: PRouteData = route.data;
 
     let permissions: string[] = [];
     if (data?.permissions) {
