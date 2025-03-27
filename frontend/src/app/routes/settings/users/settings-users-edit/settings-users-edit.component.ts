@@ -59,10 +59,10 @@ export class SettingsUsersEditComponent implements OnInit {
   }
 
   private async initUser() {
-    const uuid = this.route.snapshot.paramMap.get('uuid');
+    let uuid = this.route.snapshot.paramMap.get('uuid');
 
     // Get special roles
-    const SpecialRoles = await this.staticInfo.getSpecialRoles();
+    let SpecialRoles = await this.staticInfo.getSpecialRoles();
     this.soulBoundRoles = SpecialRoles.SoulBoundRoles;
 
     // Check if edit or add
@@ -78,7 +78,7 @@ export class SettingsUsersEditComponent implements OnInit {
     this.model.putId(uuid);
 
     // Fetch more data
-    const user = await this.userManageService.getUser(uuid);
+    let user = await this.userManageService.getUser(uuid);
     if (HasFailed(user))
       return this.errorService.showFailure(user, this.logger);
 
@@ -88,12 +88,12 @@ export class SettingsUsersEditComponent implements OnInit {
   }
 
   private async initImmutableUsersList() {
-    const SpecialUsers = await this.staticInfo.getSpecialUsers();
+    let SpecialUsers = await this.staticInfo.getSpecialUsers();
     this.ImmutableUsersList = SpecialUsers.ImmutableUsersList;
   }
 
   private async initRoles() {
-    const roles = await this.rolesService.getRoles();
+    let roles = await this.rolesService.getRoles();
     if (HasFailed(roles))
       return this.errorService.showFailure(roles, this.logger);
 
@@ -101,10 +101,10 @@ export class SettingsUsersEditComponent implements OnInit {
   }
 
   public getEffectivePermissions(): string[] {
-    const permissions: string[] = [];
+    let permissions: string[] = [];
 
-    for (const role of this.model.selectedRoles) {
-      const fullRole = this.allFullRoles.find((r) => r.name === role);
+    for (let role of this.model.selectedRoles) {
+      let fullRole = this.allFullRoles.find((r) => r.name === role);
       if (!fullRole) {
         this.logger.warn(`Role ${role} not found`);
         continue;
@@ -124,17 +124,17 @@ export class SettingsUsersEditComponent implements OnInit {
 
   async updateUser() {
     if (this.adding) {
-      const data = this.model.getDataCreate();
-      const resultUser = await this.userManageService.createUser(data);
+      let data = this.model.getDataCreate();
+      let resultUser = await this.userManageService.createUser(data);
       if (HasFailed(resultUser))
         return this.errorService.showFailure(resultUser, this.logger);
 
       this.errorService.success('User created');
     } else {
-      const data = this.model.getDataUpdate();
+      let data = this.model.getDataUpdate();
       if (!data.password) delete data.password;
 
-      const resultUser = await this.userManageService.updateUser(data);
+      let resultUser = await this.userManageService.updateUser(data);
       if (HasFailed(resultUser))
         return this.errorService.showFailure(resultUser, this.logger);
 
