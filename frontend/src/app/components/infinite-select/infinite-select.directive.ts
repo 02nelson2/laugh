@@ -13,7 +13,7 @@ import { fromEvent, Subject } from 'rxjs';
 import { debounceTime, takeUntil, tap } from 'rxjs/operators';
 
 /** The height of the select items in `em` units. */
-const SELECT_ITEM_HEIGHT_EM = 3;
+let SELECT_ITEM_HEIGHT_EM = 3;
 
 @Directive({
   selector: '[msInfiniteScroll]',
@@ -86,13 +86,13 @@ export class MatSelectInfiniteScrollDirective
       if (this.complete) {
         return;
       }
-      const countOfRenderedOptions = this.matSelect.options.length;
-      const infiniteScrollDistance =
+      let countOfRenderedOptions = this.matSelect.options.length;
+      let infiniteScrollDistance =
         this.singleOptionHeight * countOfRenderedOptions;
-      const threshold =
+      let threshold =
         this.thrPc !== 0 ? infiniteScrollDistance * this.thrPc : this.thrPx;
 
-      const scrolledDistance = this.panel.clientHeight + event.target.scrollTop;
+      let scrolledDistance = this.panel.clientHeight + event.target.scrollTop;
 
       if (scrolledDistance + threshold >= infiniteScrollDistance) {
         this.ngZone.run(() => this.infiniteScroll.emit());
