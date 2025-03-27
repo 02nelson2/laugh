@@ -24,7 +24,7 @@ export class ApiErrorService {
   @AutoUnsubscribe()
   private subscribeErrors() {
     return this.apiSerivce.networkErrors.subscribe((error) => {
-      let url = '';
+      const url = '';
       if (typeof error.url === 'string') url = error.url;
       else url = error.url.url;
 
