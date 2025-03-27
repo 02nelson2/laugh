@@ -23,7 +23,7 @@ export class SharpWorker {
       return this.purge('This is not a worker process');
     }
 
-    const memoryLimit = parseInt(process.env['MEMORY_LIMIT_MB'] ?? '');
+    let memoryLimit = parseInt(process.env['MEMORY_LIMIT_MB'] ?? '');
 
     if (isNaN(memoryLimit) || memoryLimit <= 0) {
       return this.purge('MEMORY_LIMIT_MB environment variable is not set');
@@ -75,7 +75,7 @@ export class SharpWorker {
       return this.purge('Not initialized');
     }
 
-    const operation = message.operation;
+    let operation = message.operation;
     message.operation.parameters;
 
     this.sharpi = (this.sharpi[operation.name] as any)(...operation.parameters);
@@ -89,12 +89,12 @@ export class SharpWorker {
       return this.purge('Not initialized');
     }
 
-    const sharpi = this.sharpi;
+    let sharpi = this.sharpi;
     this.sharpi = null;
 
     try {
-      const result = await UniversalSharpOut(sharpi, filetype, options);
-      const processingTime = Date.now() - this.startTime;
+      let result = await UniversalSharpOut(sharpi, filetype, options);
+      let processingTime = Date.now() - this.startTime;
 
       this.sendMessage({
         type: 'result',
