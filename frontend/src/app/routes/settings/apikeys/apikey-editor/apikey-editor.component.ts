@@ -27,7 +27,7 @@ export class SettingsApiKeyEditorComponent {
       return;
     }
 
-    const value = this.field.value;
+    let value = this.field.value;
     if (value === null) return;
 
     this.change.emit(value);
