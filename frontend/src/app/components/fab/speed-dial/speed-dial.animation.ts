@@ -7,7 +7,7 @@ import {
   trigger,
 } from '@angular/animations';
 
-export const SpeedDialAnimation = trigger('speedDialAnimation', [
+export let SpeedDialAnimation = trigger('speedDialAnimation', [
   transition(':enter', [
     query('[mat-mini-fab]', [
       style({ transform: 'scale(0)' }),
