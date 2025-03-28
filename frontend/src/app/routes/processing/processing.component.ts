@@ -21,7 +21,7 @@ export class ProcessingComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    const state = history.state as ProcessingViewMeta;
+    let state = history.state as ProcessingViewMeta;
     if (!ProcessingViewMeta.is(state)) {
       return this.errorService.quitFailure(
         Fail(FT.UsrValidation, 'No state provided'),
@@ -31,7 +31,7 @@ export class ProcessingComponent implements OnInit {
 
     history.replaceState(null, '');
 
-    const id = await this.imageService.UploadImage(state.imageFiles[0]);
+    let id = await this.imageService.UploadImage(state.imageFiles[0]);
 
     if (HasFailed(id)) return this.errorService.quitFailure(id, this.logger);
 
