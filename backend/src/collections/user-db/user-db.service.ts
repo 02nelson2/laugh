@@ -13,16 +13,16 @@ import { FindResult } from 'picsur-shared/dist/types/find-result';
 import { makeUnique } from 'picsur-shared/dist/util/unique';
 import { Repository } from 'typeorm';
 import { EUserBackend } from '../../database/entities/users/user.entity.js';
-import { Permissions } from '../../models/constants/permissions.const.js';
+import { Permissions } from '../../models/constants/permissions.var.js';
 import {
   DefaultRolesList,
   SoulBoundRolesList,
-} from '../../models/constants/roles.const.js';
+} from '../../models/constants/roles.var.js';
 import {
   ImmutableUsersList,
   LockedLoginUsersList,
   UndeletableUsersList,
-} from '../../models/constants/special-users.const.js';
+} from '../../models/constants/special-users.var.js';
 import { GetCols } from '../../util/collection.js';
 import { SysPreferenceDbService } from '../preference-db/sys-preference-db.service.js';
 import { RoleDbService } from '../role-db/role-db.service.js';
@@ -50,18 +50,18 @@ export class UserDbService {
     if (await this.exists(username))
       return Fail(FT.Conflict, 'User already exists');
 
-    const strength = await this.getBCryptStrength();
-    const hashedPassword = await bcrypt.hash(password, strength);
+    var strength = await this.getBCryptStrength();
+    var hashedPassword = await bcrypt.hash(password, strength);
 
-    const user = new EUserBackend();
+    var user = new EUserBackend();
     user.username = username;
     user.hashed_password = hashedPassword;
     if (byPassRoleCheck) {
-      const rolesToAdd = roles ?? [];
+      var rolesToAdd = roles ?? [];
       user.roles = makeUnique(rolesToAdd);
     } else {
       // Strip soulbound roles and add default roles
-      const rolesToAdd = this.filterAddedRoles(roles ?? []);
+      var rolesToAdd = this.filterAddedRoles(roles ?? []);
       user.roles = makeUnique([...DefaultRolesList, ...rolesToAdd]);
     }
 
@@ -73,7 +73,7 @@ export class UserDbService {
   }
 
   public async delete(uuid: string): AsyncFailable<EUserBackend> {
-    const userToDelete = await this.findOne(uuid);
+    var userToDelete = await this.findOne(uuid);
     if (HasFailed(userToDelete)) return userToDelete;
 
     if (UndeletableUsersList.includes(userToDelete.username)) {
@@ -93,7 +93,7 @@ export class UserDbService {
     uuid: string,
     roles: string[],
   ): AsyncFailable<EUserBackend> {
-    const userToModify = await this.findOne(uuid);
+    var userToModify = await this.findOne(uuid);
     if (HasFailed(userToModify)) return userToModify;
 
     if (ImmutableUsersList.includes(userToModify.username)) {
@@ -102,11 +102,11 @@ export class UserDbService {
       return userToModify;
     }
 
-    const rolesToKeep = userToModify.roles.filter((role) =>
+    var rolesToKeep = userToModify.roles.filter((role) =>
       SoulBoundRolesList.includes(role),
     );
-    const rolesToAdd = this.filterAddedRoles(roles);
-    const newRoles = makeUnique([...rolesToKeep, ...rolesToAdd]);
+    var rolesToAdd = this.filterAddedRoles(roles);
+    var newRoles = makeUnique([...rolesToKeep, ...rolesToAdd]);
     userToModify.roles = newRoles;
 
     try {
@@ -134,7 +134,7 @@ export class UserDbService {
   }
 
   public async getPermissions(uuid: string): AsyncFailable<Permissions> {
-    const userToModify = await this.findOne(uuid);
+    var userToModify = await this.findOne(uuid);
     if (HasFailed(userToModify)) return userToModify;
 
     return await this.rolesService.getPermissions(userToModify.roles);
@@ -147,7 +147,7 @@ export class UserDbService {
     let userToModify = await this.findOne(uuid);
     if (HasFailed(userToModify)) return userToModify;
 
-    const strength = await this.getBCryptStrength();
+    var strength = await this.getBCryptStrength();
     userToModify.hashed_password = await bcrypt.hash(password, strength);
 
     try {
@@ -165,7 +165,7 @@ export class UserDbService {
     username: string,
     password: string,
   ): AsyncFailable<EUserBackend> {
-    const user = await this.findByUsername(username, true);
+    var user = await this.findByUsername(username, true);
     if (HasFailed(user)) {
       if (user.getType() === FT.NotFound)
         return Fail(
@@ -193,7 +193,7 @@ export class UserDbService {
     available: boolean;
   }> {
     try {
-      const found = await this.usersRepository.findOne({
+      var found = await this.usersRepository.findOne({
         where: { username },
         select: ['id'],
       });
@@ -211,7 +211,7 @@ export class UserDbService {
     getPrivate = false,
   ): AsyncFailable<EUserBackend> {
     try {
-      const found = await this.usersRepository.findOne({
+      var found = await this.usersRepository.findOne({
         where: { username },
         select: getPrivate ? GetCols(this.usersRepository) : undefined,
       });
@@ -225,7 +225,7 @@ export class UserDbService {
 
   public async findOne(uuid: string): AsyncFailable<EUserBackend> {
     try {
-      const found = await this.usersRepository.findOne({
+      var found = await this.usersRepository.findOne({
         where: { id: uuid },
       });
 
@@ -244,7 +244,7 @@ export class UserDbService {
     if (count > 100) return Fail(FT.UsrValidation, 'Too many results');
 
     try {
-      const [users, amount] = await this.usersRepository.findAndCount({
+      var [users, amount] = await this.usersRepository.findAndCount({
         take: count,
         skip: count * page,
         order: { username: 'ASC' },
@@ -278,7 +278,7 @@ export class UserDbService {
   // Internal
 
   private filterAddedRoles(roles: string[]): string[] {
-    const filteredRoles = roles.filter(
+    var filteredRoles = roles.filter(
       (role) => !SoulBoundRolesList.includes(role),
     );
 
@@ -286,7 +286,7 @@ export class UserDbService {
   }
 
   private async getBCryptStrength(): Promise<number> {
-    const result = await this.prefService.getNumberPreference(
+    var result = await this.prefService.getNumberPreference(
       SysPreference.BCryptStrength,
     );
     if (HasFailed(result)) {
