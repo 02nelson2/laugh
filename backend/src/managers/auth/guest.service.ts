@@ -14,7 +14,7 @@ export class GuestService {
   }
 
   public async getGuestUser(): Promise<EUserBackend> {
-    const user = await this.usersService.findByUsername('guest');
+    let user = await this.usersService.findByUsername('guest');
     if (HasFailed(user)) {
       return this.fallBackUser;
     }
