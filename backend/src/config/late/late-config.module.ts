@@ -35,8 +35,8 @@ export class LateConfigModule implements OnModuleInit {
   }
 
   async ensureJwtDefaultsLoaded() {
-    const envSecret = this.envJwtConfigService.getJwtSecret();
-    const envExpiresIn = this.envJwtConfigService.getJwtExpiresIn();
+    let envSecret = this.envJwtConfigService.getJwtSecret();
+    let envExpiresIn = this.envJwtConfigService.getJwtExpiresIn();
 
     if (envSecret === undefined) {
       await this.prefService.getPreference('jwt_secret');
