@@ -5,5 +5,5 @@ export { Permission } from 'picsur-shared/dist/dto/permissions.enum';
 
 // Derivatives
 
-export const PermissionsList: Permission[] = Object.values(Permission);
+export let PermissionsList: Permission[] = Object.values(Permission);
 export type Permissions = Permission[];
