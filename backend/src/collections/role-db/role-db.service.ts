@@ -11,12 +11,12 @@ import {
 import { makeUnique } from 'picsur-shared/dist/util/unique';
 import { In, Repository } from 'typeorm';
 import { ERoleBackend } from '../../database/entities/users/role.entity.js';
-import { Permissions } from '../../models/constants/permissions.const.js';
+import { Permissions } from '../../models/constants/permissions.let.js';
 import {
     ImmutableRolesList,
     RolePermissionsLocks,
     UndeletableRolesList,
-} from '../../models/constants/roles.const.js';
+} from '../../models/constants/roles.let.js';
 
 @Injectable()
 export class RoleDbService {
@@ -34,7 +34,7 @@ export class RoleDbService {
     if (await this.exists(name))
       return Fail(FT.Conflict, 'Role already exists');
 
-    const role = new ERoleBackend();
+    let role = new ERoleBackend();
     role.name = name;
     role.permissions = permissions;
 
@@ -46,7 +46,7 @@ export class RoleDbService {
   }
 
   public async delete(name: string): AsyncFailable<ERoleBackend> {
-    const roleToModify = await this.findOne(name);
+    let roleToModify = await this.findOne(name);
     if (HasFailed(roleToModify)) return roleToModify;
 
     if (UndeletableRolesList.includes(roleToModify.name)) {
@@ -61,10 +61,10 @@ export class RoleDbService {
   }
 
   public async getPermissions(roles: string[]): AsyncFailable<Permissions> {
-    const foundRoles = await this.findMany(roles);
+    let foundRoles = await this.findMany(roles);
     if (HasFailed(foundRoles)) return foundRoles;
 
-    const permissions = foundRoles.reduce(
+    let permissions = foundRoles.reduce(
       (acc, role) => [...acc, ...role.permissions],
       [] as Permissions,
     );
@@ -76,10 +76,10 @@ export class RoleDbService {
     name: string,
     permissions: Permissions,
   ): AsyncFailable<ERoleBackend> {
-    const roleToModify = await this.findOne(name);
+    let roleToModify = await this.findOne(name);
     if (HasFailed(roleToModify)) return roleToModify;
 
-    const newPermissions = makeUnique([
+    let newPermissions = makeUnique([
       ...roleToModify.permissions,
       ...permissions,
     ]);
@@ -91,10 +91,10 @@ export class RoleDbService {
     name: string,
     permissions: Permissions,
   ): AsyncFailable<ERoleBackend> {
-    const roleToModify = await this.findOne(name);
+    let roleToModify = await this.findOne(name);
     if (HasFailed(roleToModify)) return roleToModify;
 
-    const newPermissions = roleToModify.permissions.filter(
+    let newPermissions = roleToModify.permissions.filter(
       (permission) => !permissions.includes(permission),
     );
 
@@ -108,7 +108,7 @@ export class RoleDbService {
     // Extra bypass for internal use
     allowImmutable = false,
   ): AsyncFailable<ERoleBackend> {
-    const roleToModify = await this.resolve(role);
+    let roleToModify = await this.resolve(role);
     if (HasFailed(roleToModify)) return roleToModify;
 
     if (!allowImmutable && ImmutableRolesList.includes(roleToModify.name)) {
@@ -116,7 +116,7 @@ export class RoleDbService {
     }
 
     // If the permission are missing a role specified in RolePermissionsLocks[roleToModify.name], fail
-    const missingPermissions = RolePermissionsLocks[roleToModify.name].filter(
+    let missingPermissions = RolePermissionsLocks[roleToModify.name].filter(
       (permission) => !permissions.includes(permission),
     );
     if (missingPermissions.length > 0) {
@@ -137,7 +137,7 @@ export class RoleDbService {
 
   public async findOne(name: string): AsyncFailable<ERoleBackend> {
     try {
-      const found = await this.rolesRepository.findOne({
+      let found = await this.rolesRepository.findOne({
         where: { name },
       });
 
@@ -150,7 +150,7 @@ export class RoleDbService {
 
   public async findMany(names: string[]): AsyncFailable<ERoleBackend[]> {
     try {
-      const found = await this.rolesRepository.find({
+      let found = await this.rolesRepository.find({
         where: { name: In(names) },
         order: { name: 'ASC' },
       });
@@ -164,7 +164,7 @@ export class RoleDbService {
 
   public async findAll(): AsyncFailable<ERoleBackend[]> {
     try {
-      const found = await this.rolesRepository.find({
+      let found = await this.rolesRepository.find({
         order: { name: 'ASC' },
       });
       if (!found) return Fail(FT.NotFound, 'No roles found');
@@ -201,7 +201,7 @@ export class RoleDbService {
     if (typeof role === 'string') {
       return await this.findOne(role);
     } else {
-      const result = ERoleSchema.safeParse(role);
+      let result = ERoleSchema.safeParse(role);
       if (!result.success) {
         return Fail(FT.SysValidation, result.error);
       }
