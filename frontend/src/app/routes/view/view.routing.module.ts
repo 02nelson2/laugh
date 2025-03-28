@@ -5,7 +5,7 @@ import { PermissionGuard } from '../../guards/permission.guard';
 import { PRoutes } from '../../models/dto/picsur-routes.dto';
 import { ViewComponent } from './view.component';
 
-const routes: PRoutes = [
+let routes: PRoutes = [
   {
     path: ':id',
     component: ViewComponent,
