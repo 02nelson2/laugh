@@ -1,16 +1,16 @@
 import { ValidationErrors, Validators } from '@angular/forms';
 import { errorsToError } from './util.validator';
 
-export const RoleNameValidators = [
+export let RoleNameValidators = [
   Validators.minLength(4),
   Validators.maxLength(32),
   Validators.pattern('^[a-zA-Z0-9]+$'),
 ];
 
-export const CreateRoleNameError = (
+export let CreateRoleNameError = (
   errors: ValidationErrors | null,
 ): string => {
-  const error = errorsToError(errors);
+  let error = errorsToError(errors);
   switch (error) {
     case 'required':
       return 'Role name is required';
