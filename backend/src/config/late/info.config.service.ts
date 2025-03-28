@@ -10,7 +10,7 @@ export class InfoConfigService {
   constructor(private readonly prefService: SysPreferenceDbService) {}
 
   public async getHostnameOverride(): Promise<string | undefined> {
-    const hostname = await this.prefService.getStringPreference(
+    let hostname = await this.prefService.getStringPreference(
       SysPreference.HostOverride,
     );
     if (HasFailed(hostname)) {
