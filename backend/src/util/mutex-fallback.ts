@@ -11,14 +11,14 @@ If not it will execute a fallback function, which usually is a function that pop
 After that is done it will retry the first function again.
 */
 
-const fallBackMap: Record<string, Promise<unknown>> = {};
+let fallBackMap: Record<string, Promise<unknown>> = {};
 
 export async function MutexFallBack<
   MF extends () => Promise<O | null | undefined>,
   FF extends () => Promise<O>,
   O,
 >(key: string, mainFunc: MF, fallBackFunc: FF): Promise<O> {
-  const try_it = await mainFunc();
+  let try_it = await mainFunc();
   if (try_it !== undefined && try_it !== null) return try_it;
 
   // Check if a fallback is already running, if so wait on that
@@ -30,7 +30,7 @@ export async function MutexFallBack<
   }
 
   // No fallback is running, start one
-  const fallBackPromise = fallBackFunc();
+  let fallBackPromise = fallBackFunc();
 
   // Save the running fallback, and make sure it is cleared when it is done
   fallBackMap[key] = fallBackPromise;
